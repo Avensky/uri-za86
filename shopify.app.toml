@@ -2,7 +2,7 @@
 
 name = "uriza86"
 client_id = "0b376d2bcd58773b94b72619a1fe54c3"
-application_url = "https://intel-computing-l-truth.trycloudflare.com"
+application_url = "https://table-helen-replaced-via.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://intel-computing-l-truth.trycloudflare.com/auth/callback",
-  "https://intel-computing-l-truth.trycloudflare.com/auth/shopify/callback",
-  "https://intel-computing-l-truth.trycloudflare.com/api/auth/callback"
+  "https://table-helen-replaced-via.trycloudflare.com/auth/callback",
+  "https://table-helen-replaced-via.trycloudflare.com/auth/shopify/callback",
+  "https://table-helen-replaced-via.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
