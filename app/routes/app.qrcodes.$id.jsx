@@ -134,6 +134,7 @@ export default function QRCodeForm() {
       <Layout>
         <Layout.Section>
           <BlockStack gap="500">
+            {/* Title Card */}
             <Card>
               <BlockStack gap="500">
                 <Text as={"h2"} variant="headingLg">
@@ -151,6 +152,7 @@ export default function QRCodeForm() {
                 />
               </BlockStack>
             </Card>
+            {/* Product Card */}
             <Card>
               <BlockStack gap="500">
                 <InlineStack align="space-between">

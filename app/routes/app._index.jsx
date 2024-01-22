@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { json } from "@remix-run/node";
-import { useActionData, useSubmit, useLoaderData, useNavigate, Link} from "@remix-run/react";
+import { useActionData, useSubmit, useLoaderData, useNavigate, useNavigation, Link} from "@remix-run/react";
 // import {, useNavigation} from "@remix-run/react";
 import {
   Page,
   Layout,
   Text,
   Card,
-  // Button,
-  // BlockStack,
-  // Box,
-  // List,
+  Button,
+  BlockStack,
+  Box,
+  List,
   // Link,
   InlineStack,
   EmptyState,
@@ -108,82 +108,88 @@ const QRTableRow = ({ qrCode }) => (
   </IndexTable.Row>
 );
 
-// export const action = async ({ request }) => {
-//   const { admin } = await authenticate.admin(request);
-//   const color = ["Red", "Orange", "Yellow", "Green"][
-//     Math.floor(Math.random() * 4)
-//   ];
-//   const response = await admin.graphql(
-//     `#graphql
-//       mutation populateProduct($input: ProductInput!) {
-//         productCreate(input: $input) {
-//           product {
-//             id
-//             title
-//             handle
-//             status
-//             variants(first: 10) {
-//               edges {
-//                 node {
-//                   id
-//                   price
-//                   barcode
-//                   createdAt
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }`,
-//     {
-//       variables: {
-//         input: {
-//           title: `${color} Snowboard`,
-//           variants: [{ price: Math.random() * 100 }],
-//         },
-//       },
-//     }
-//   );
-//   const responseJson = await response.json();
+export const action = async ({ request }) => {
+  const { admin } = await authenticate.admin(request);
+  const color = ["Red", "Orange", "Yellow", "Green"][
+    Math.floor(Math.random() * 4)
+  ];
+  const response = await admin.graphql(
+    `#graphql
+      mutation populateProduct($input: ProductInput!) {
+        productCreate(input: $input) {
+          product {
+            id
+            title
+            handle
+            status
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  price
+                  barcode
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+      }`,
+    {
+      variables: {
+        input: {
+          title: `${color} Snowboard`,
+          variants: [{ price: Math.random() * 100 }],
+        },
+      },
+    }
+  );
+  const responseJson = await response.json();
 
-//   return json({
-//     product: responseJson.data?.productCreate?.product,
-//   });
-// };
+  return json({
+    product: responseJson.data?.productCreate?.product,
+  });
+};
 
 export default function Index() {
   const { qrCodes } = useLoaderData();
-  // const nav = useNavigation();
+  const nav = useNavigation();
   const navigate = useNavigate();
 
-  // const actionData = useActionData();
-  // const submit = useSubmit();
-  // const isLoading =
-  //   ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
-  // const productId = actionData?.product?.id.replace(
-  //   "gid://shopify/Product/",
-  //   ""
-  // );
+  const actionData = useActionData();
+  const submit = useSubmit();
+  const isLoading =
+    ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
+  const productId = actionData?.product?.id.replace(
+    "gid://shopify/Product/",
+    ""
+  );
 
-  // useEffect(() => {
-  //   if (productId) {
-  //     shopify.toast.show("Product created");
-  //   }
-  // }, [productId]);
-  // const generateProduct = () => submit({}, { replace: true, method: "POST" });
+  useEffect(() => {
+    if (productId) {
+      shopify.toast.show("Product created");
+    }
+  }, [productId]);
+  const generateProduct = () => submit({}, { replace: true, method: "POST" });
 
   return (
     <Page>
-      {/* <ui-title-bar title="Remix app template">
+      {/* Page Header */}
+      <ui-title-bar title="Remix app template">
         <button variant="primary" onClick={generateProduct}>
           Generate a product
         </button>
       </ui-title-bar>
+
+      {/* Page Body */}
       <BlockStack gap="500">
         <Layout>
           <Layout.Section>
+            <BlockStack gap="500">
+          {/* Left Column */}
+            {/* Generate Product */}
             <Card>
-              <BlockStack gap="500">
+              <BlockStack gap="200">
                 <BlockStack gap="200">
                   <Text as="h2" variant="headingMd">
                     Congrats on creating a new Shopify app 🎉
@@ -260,9 +266,34 @@ export default function Index() {
                 )}
               </BlockStack>
             </Card>
+          
+            {/* QR Code Generator */}
+            <Card>
+              <BlockStack gap='200'>
+                <Text as="h3" variant="headingMd">QR codes</Text>
+                <Button variant="primary" onClick={() => navigate('/app/qrcodes/new')}>
+                  Create QR code
+                </Button>
+                
+                  <Card padding="0">
+                    {qrCodes.length === 0 ? (
+                      <EmptyQRCodeState onAction={() => navigate("qrcodes/new")} />
+                      ) : (
+                        <QRTable qrCodes={qrCodes} />
+                        )}
+                  </Card>
+                
+              </BlockStack>
+          
+            </Card>
+            </BlockStack>
           </Layout.Section>
+
+          {/* Right Colum */}
           <Layout.Section variant="oneThird">
             <BlockStack gap="500">
+
+              {/* Add Template Card */}
               <Card>
                 <BlockStack gap="200">
                   <Text as="h2" variant="headingMd">
@@ -330,6 +361,8 @@ export default function Index() {
                   </BlockStack>
                 </BlockStack>
               </Card>
+
+              {/* Next steps Card */}
               <Card>
                 <BlockStack gap="200">
                   <Text as="h2" variant="headingMd">
@@ -364,24 +397,7 @@ export default function Index() {
             </BlockStack>
           </Layout.Section>
         </Layout>
-      </BlockStack> */}
-
-      <ui-title-bar title="QR codes">
-        <button variant="primary" onClick={() => navigate("/app/qrcodes/new")}>
-          Create QR code
-        </button>
-      </ui-title-bar>
-      <Layout>
-        <Layout.Section>
-          <Card padding="0">
-            {qrCodes.length === 0 ? (
-              <EmptyQRCodeState onAction={() => navigate("qrcodes/new")} />
-            ) : (
-              <QRTable qrCodes={qrCodes} />
-            )}
-          </Card>
-        </Layout.Section>
-      </Layout>
+      </BlockStack>
     </Page>
   );
 }
